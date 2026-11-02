@@ -1,0 +1,120 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-8 col-xl-7">
+    <mat-card class="p-3">
+
+      @if (created(); as c) {
+        <mat-card-header class="mb-2"><mat-card-title>Manager created</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <p><strong>{{ c.name }}</strong> ({{ c.roleLabel }}) can now sign in.</p>
+          <div class="p-3 mb-3 rounded font-monospace" style="background: var(--color-cream)">
+            Username: {{ c.username }}<br />
+            Temporary password: {{ c.password }}
+          </div>
+          <p class="small">They will be asked to choose a new password on first login. This password is not shown again.</p>
+          <div class="d-flex gap-2">
+            <button mat-flat-button (click)="copyCredentials()"><mat-icon>content_copy</mat-icon> Copy credentials</button>
+            <button mat-stroked-button (click)="createAnother()">Create another</button>
+          </div>
+        </mat-card-content>
+      } @else {
+        <mat-card-header class="mb-3">
+          <mat-card-title>Create a manager</mat-card-title>
+          <mat-card-subtitle>They sign in with the temporary password you set</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="row g-2">
+              <div class="col-12 col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Full name</mat-label>
+                  <input matInput formControlName="name" />
+                  <mat-error>Name is required</mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Role</mat-label>
+                  <mat-select formControlName="role">
+                    @for (r of roles; track r.value) {
+                      <mat-option [value]="r.value">{{ r.label }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-error>Please select a role</mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Username</mat-label>
+                  <input matInput formControlName="username" autocomplete="off" />
+                  @if (form.controls.username.hasError('required')) {
+                    <mat-error>Username is required</mat-error>
+                  } @else if (form.controls.username.hasError('minlength')) {
+                    <mat-error>At least 4 characters</mat-error>
+                  } @else if (form.controls.username.hasError('pattern')) {
+                    <mat-error>Letters, numbers, dot and underscore only</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Email</mat-label>
+                  <input matInput type="email" formControlName="email" />
+                  @if (form.controls.email.hasError('required')) {
+                    <mat-error>Email is required</mat-error>
+                  } @else if (form.controls.email.hasError('email')) {
+                    <mat-error>Enter a valid email</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Phone</mat-label>
+                  <input matInput type="tel" maxlength="10" formControlName="phone" />
+                  @if (form.controls.phone.hasError('required')) {
+                    <mat-error>Phone is required</mat-error>
+                  } @else if (form.controls.phone.hasError('pattern')) {
+                    <mat-error>Enter a valid 10-digit mobile number</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Temporary password</mat-label>
+                  <input matInput formControlName="password" autocomplete="new-password"
+                         [type]="hidePassword() ? 'password' : 'text'" />
+                  <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())">
+                    <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                  @if (form.controls.password.hasError('required')) {
+                    <mat-error>Password is required</mat-error>
+                  } @else if (form.controls.password.hasError('minlength')) {
+                    <mat-error>At least 8 characters</mat-error>
+                  }
+                </mat-form-field>
+                <button mat-button type="button" (click)="generatePassword()">
+                  <mat-icon>autorenew</mat-icon> Generate secure password
+                </button>
+              </div>
+            </div>
+
+            @if (errorMessage()) {
+              <div class="alert alert-danger py-2 mt-2">{{ errorMessage() }}</div>
+            }
+
+            <div class="d-grid mt-3">
+              <button mat-flat-button type="submit" [disabled]="loading()">
+                @if (loading()) { <mat-spinner diameter="20" /> } @else { Create manager }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      }
+    </mat-card>
+  </div>
+</div>

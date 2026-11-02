@@ -1,0 +1,51 @@
+<div class="container min-vh-100 d-flex align-items-center">
+  <div class="row justify-content-center w-100">
+    <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+      <mat-card class="p-3">
+        <mat-card-header class="mb-3">
+          <mat-card-title>Bus Reservation</mat-card-title>
+          <mat-card-subtitle>Sign in to continue</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column gap-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Username</mat-label>
+              <input matInput formControlName="username" autocomplete="username" />
+              @if (form.controls.username.hasError('required')) {
+                <mat-error>Username is required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Password</mat-label>
+              <input matInput formControlName="password"
+                     [type]="hidePassword() ? 'password' : 'text'"
+                     autocomplete="current-password" />
+              <button mat-icon-button matSuffix type="button"
+                      (click)="hidePassword.set(!hidePassword())">
+                <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              @if (form.controls.password.hasError('required')) {
+                <mat-error>Password is required</mat-error>
+              }
+            </mat-form-field>
+
+            @if (errorMessage()) {
+              <div class="alert alert-danger py-2 mb-0">{{ errorMessage() }}</div>
+            }
+
+            <button mat-flat-button type="submit" [disabled]="loading()">
+              @if (loading()) {
+                <mat-spinner diameter="20" />
+              } @else {
+                Sign in
+              }
+            </button>
+            <p class="text-center mt-3 mb-0">New here? <a routerLink="/register">Create an account</a></p>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

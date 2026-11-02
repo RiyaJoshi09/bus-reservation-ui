@@ -1,0 +1,72 @@
+@if (profile(); as p) {
+<mat-card class="p-3 mb-4">
+    <mat-card-header class="mb-3">
+        <mat-card-title>My profile</mat-card-title>
+        <mat-card-subtitle>{{ auth.username() }} · {{ roleLabel(p.role) }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        @if (!editing()) {
+        <div class="row">
+            <app-profile-field label="Name" [value]="p.name" />
+            <app-profile-field label="Phone" [value]="p.phone" />
+            <app-profile-field label="Email" [value]="p.email" />
+            <app-profile-field label="Role" [value]="roleLabel(p.role)" />
+            <app-profile-field label="Company" [value]="p.busServiceProvider" />
+        </div>
+        <button mat-flat-button (click)="startEdit()">Edit profile</button>
+        } @else {
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <p class="small text-body-secondary">Email, role and company cannot be changed here.</p>
+            <div class="row g-2">
+                <div class="col-12 col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Full name</mat-label>
+                        <input matInput formControlName="name" />
+                        <mat-error>Name is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Phone</mat-label>
+                        <input matInput type="tel" maxlength="10" formControlName="phone" />
+                        @if (form.controls.phone.hasError('required')) {
+                        <mat-error>Phone is required</mat-error>
+                        } @else if (form.controls.phone.hasError('pattern')) {
+                        <mat-error>Enter a valid 10-digit mobile number</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+                <div class="col-12 col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email" />
+                        <mat-error>Email is required</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            @if (saveError()) {
+            <div class="alert alert-danger py-2">{{ saveError() }}</div>
+            }
+
+            <div class="d-flex gap-2">
+                <button mat-flat-button type="submit" [disabled]="saving()">
+                    @if (saving()) { <mat-spinner diameter="20" /> } @else { Save changes }
+                </button>
+                <button mat-button type="button" [disabled]="saving()" (click)="cancelEdit()">Cancel</button>
+            </div>
+        </form>
+        }
+    </mat-card-content>
+</mat-card>
+
+<app-delete-account-card [username]="auth.username() ?? ''" [busy]="deleting()" (confirmed)="deleteAccount()" />
+}@else if (loading()) {
+<div class="d-flex justify-content-center py-5"><mat-spinner diameter="40" /></div>
+} @else if (loadError()) {
+<div class="alert alert-danger d-flex justify-content-between align-items-center">
+    <span>{{ loadError() }}</span>
+    <button mat-button (click)="load()">Retry</button>
+</div>
+} 

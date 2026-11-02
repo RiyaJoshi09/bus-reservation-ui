@@ -1,0 +1,67 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-md-9 col-lg-6">
+    <mat-card class="p-3">
+
+      @if (registeredCompany(); as company) {
+        <mat-card-header class="mb-2">
+          <mat-card-title>Registration received</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p><strong>{{ company }}</strong> has been registered and is now <strong>waiting for agreement</strong>.</p>
+          <p class="mb-0">
+            Once our team approves your agreement, your Super Manager login
+            credentials will be sent to the company email you provided.
+          </p>
+        </mat-card-content>
+      } @else {
+        <mat-card-header class="mb-3">
+          <mat-card-title>Register your bus company</mat-card-title>
+          <mat-card-subtitle>Operators join the platform after agreement approval</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column gap-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Company name</mat-label>
+              <input matInput formControlName="companyName" autocomplete="organization" />
+              @if (form.controls.companyName.hasError('required')) {
+                <mat-error>Company name is required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Company email</mat-label>
+              <input matInput type="email" formControlName="companyEmail" autocomplete="email" />
+              <mat-hint>Credentials will be sent here after approval</mat-hint>
+              @if (form.controls.companyEmail.hasError('required')) {
+                <mat-error>Company email is required</mat-error>
+              } @else if (form.controls.companyEmail.hasError('email')) {
+                <mat-error>Enter a valid email</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>PNR pattern (regex)</mat-label>
+              <input matInput class="font-monospace" formControlName="pnrRegex"
+                     placeholder="^[A-Z]{3}[0-9]{6}$" />
+              <mat-hint>The format your ticket PNRs follow</mat-hint>
+              @if (form.controls.pnrRegex.hasError('required')) {
+                <mat-error>PNR pattern is required</mat-error>
+              } @else if (form.controls.pnrRegex.hasError('invalidRegex')) {
+                <mat-error>This is not a valid regular expression</mat-error>
+              }
+            </mat-form-field>
+
+            @if (errorMessage()) {
+              <div class="alert alert-danger py-2 mb-0">{{ errorMessage() }}</div>
+            }
+
+            <button mat-flat-button type="submit" [disabled]="loading()">
+              @if (loading()) { <mat-spinner diameter="20" /> } @else { Submit registration }
+            </button>
+          </form>
+        </mat-card-content>
+      }
+    </mat-card>
+  </div>
+</div>

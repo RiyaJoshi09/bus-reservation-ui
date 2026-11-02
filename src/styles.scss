@@ -1,1 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+:root {
+  --color-dark-red: #780000;
+  --color-bright-red: #C1121F;
+  --color-cream: #FDF0D5;
+  --color-navy: #003049;
+  --color-sky-blue: #669BBC;
+
+  /* Bootstrap overrides */
+  --bs-body-bg: var(--color-cream);
+  --bs-body-color: var(--color-navy);
+  --bs-primary: #003049;
+  --bs-primary-rgb: 0, 48, 73;
+  --bs-link-color: var(--color-bright-red);
+  --bs-link-hover-color: var(--color-dark-red);
+}
+
+html {
+  @include mat.theme((
+    typography: Roboto,
+    density: 0,
+  ));
+
+  --mat-sys-primary: var(--color-navy);
+  --mat-sys-on-primary: var(--color-cream);
+  --mat-sys-primary-container: var(--color-sky-blue);
+  --mat-sys-on-primary-container: var(--color-navy);
+  --mat-sys-tertiary: var(--color-bright-red);
+  --mat-sys-on-tertiary: var(--color-cream);
+  --mat-sys-error: var(--color-dark-red);
+  --mat-sys-background: var(--color-cream);
+  --mat-sys-surface: var(--color-cream);
+  --mat-sys-on-surface: var(--color-navy);
+  --mat-toolbar-container-background-color: var(--color-navy);
+  --mat-toolbar-container-text-color: var(--color-cream);
+}
+
+html, body { height: 100%; }
+body { margin: 0; background-color: var(--color-cream); color: var(--color-navy);}

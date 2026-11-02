@@ -1,0 +1,22 @@
+<mat-card class="p-3">
+      <mat-card-header class="mb-2">
+        <mat-card-title class="danger-title">Delete account</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>This is permanent and cannot be undone.</p>
+        @if (!open()) {
+          <button mat-stroked-button (click)="open.set(true)">Delete my account</button>
+        } @else {
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Type "{{ username() }}" to confirm</mat-label>
+            <input matInput autocomplete="off" [ngModel]="typed()" (ngModelChange)="typed.set($event)" />
+          </mat-form-field>
+          <div class="d-flex gap-2">
+            <button mat-flat-button [disabled]="typed() !== username() || busy()" (click)="confirmed.emit()">
+              Permanently delete
+            </button>
+            <button mat-button (click)="cancel()">Cancel</button>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
